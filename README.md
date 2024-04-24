@@ -16,7 +16,7 @@ This repositories offers a toolbox across platforms.
         from whatshow_utils import OTFS
         ```
         
-### How to use
+## How to use
 * MatlabFuncHelper: this class simulate all Matlab functions in python (batch is supported).
     * checkers
         * isvector()
