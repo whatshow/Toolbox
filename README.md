@@ -5,15 +5,15 @@
 This repositories offers a toolbox across platforms.
 ## How to install
 * Install through `Matlab Add-Ons`
-    * Install through Matlab `Get Add-Ons`: search `whatshow_utils` and install it.
+    * Install through Matlab `Get Add-Ons`: search `whatshow_toolbox` and install it.
     * Install through `.mltbx`: Go to ***Releases*** to download the file `*.mltbx` in the latest release to install.
 * Install through `pip`
     ```sh
-    pip install whatshow-utils
+    pip install whatshow-toolbox
     ```
     * **import this module**
         ```
-        from whatshow_utils import OTFS
+        from whatshow_toolbox import *
         ```
         
 ## How to use

@@ -8,7 +8,7 @@ install_requires = ['numpy>=1.23.5'];
 # path
 path_cur = os.getcwd();
 path_dist = "_dist/";
-path_dist_pkg = path_dist + "whatshow_utils/";
+path_dist_pkg = path_dist + "whatshow_toolbox/";
 # file
 files = ["MatlabFuncHelper.py"];
 file_init = "__init__.py";
@@ -23,7 +23,7 @@ description = "";\n\
 with open("README.md", "r") as readme:\n\
     description = readme.read();\n\
 setup(\n\
-      name="whatshow_utils",\n\
+      name="whatshow_toolbox",\n\
       version="{version}",\n\
       packages=find_packages(),\n\
       install_requires={install_requires},\n\
@@ -64,7 +64,7 @@ with open(path_dist + file_readme, "w") as readme_pypi:
     readme_pypi.write(description_pypi);
 
 # build & upload
-# os.chdir(path_dist);
-# os.system("python " + file_setup + " sdist bdist_wheel");
-# os.system("twine upload dist/*");
-# os.chdir(path_cur);
+os.chdir(path_dist);
+os.system("python " + file_setup + " sdist bdist_wheel");
+os.system("twine upload dist/*");
+os.chdir(path_cur);
