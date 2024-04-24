@@ -17,7 +17,7 @@ This repositories offers a toolbox across platforms.
         ```
         
 ### How to use
-* MatlabFuncHelper:
+* MatlabFuncHelper: this class simulate all Matlab functions in python (batch is supported).
     * checkers
         * isvector()
         * ismatrix()
