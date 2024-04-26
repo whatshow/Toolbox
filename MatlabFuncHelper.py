@@ -5,6 +5,13 @@ class MatlabFuncHelper(object):
     batch_size = BATCH_SIZE_NO;
     
     ###########################################################################
+    # Batch
+    def setBatchSize(self, batch_size):
+        self.batch_size = batch_size;
+    def getBatchSize(self):
+        return self.batch_size;
+    
+    ###########################################################################
     # checkers
     '''
     check input is a vector like [(batch_size), n],  [(batch_size), ..., n, 1] or [(batch_size), ..., 1, n] 
@@ -258,7 +265,7 @@ class MatlabFuncHelper(object):
     ###########################################################################
     # Maths
     '''
-    return the maximum value of a matrix or the maximu value of two matrices (for complex value, we compare the magnitude)
+    return the maximum of a matrix or the maximum of two matrices (for complex value, we compare the magnitude)
     @in1:   the matrix to find the maximal value
     @in2:   a scalar or a matrix to be compared with in1. If not given, it means return the maximal value of in1
     @axis:  the axis to compare or find the maximal value
