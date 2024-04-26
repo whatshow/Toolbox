@@ -6,7 +6,6 @@ This repositories offers a toolbox across platforms.
 ## How to install
 * Install through `Matlab Add-Ons`
     * Install through Matlab `Get Add-Ons`: search `whatshow_toolbox` and install it.
-    * Install through `.mltbx`: Go to ***Releases*** to download the file `*.mltbx` in the latest release to install.
 * Install through `pip`
     ```sh
     pip install whatshow-toolbox
