@@ -3,6 +3,12 @@ from MatlabFuncHelper import MatlabFuncHelper
 
 mfh = MatlabFuncHelper();
 
+# seq
+rtn_seq = mfh.seq(3,4);
+assert(rtn_seq.shape[-1] == 1);
+rtn_seq = mfh.seq(3,4, order="F");
+assert(rtn_seq.shape[-1] == 2);
+
 # ones
 mfh.batch_size = None;
 rtn_ones = mfh.ones(4, order="F");
