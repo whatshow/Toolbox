@@ -103,7 +103,7 @@ class MatlabFuncHelper(object):
             end = args[1];
             if order == 'F':
                 end = end + 1;
-        out = np.arange(beg, step, end);
+        out = np.arange(beg, end, step);
         if self.batch_size != self.BATCH_SIZE_NO:
             out = np.tile(out,(self.batch_size, 1));
         return out;
