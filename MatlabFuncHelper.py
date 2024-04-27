@@ -11,8 +11,7 @@ class MatlabFuncHelper(object):
     def getBatchSize(self):
         return self.batch_size;
     
-    ###########################################################################
-    # checkers
+    ###########################################################################   
     '''
     check input is a vector like [(batch_size), n],  [(batch_size), ..., n, 1] or [(batch_size), ..., 1, n] 
     '''
