@@ -253,7 +253,7 @@ class MatlabFuncHelper(object):
         else:
             mat_shape = list(mat.shape);
             mat_shape.insert(0, self.batch_size);
-            out = np.zeros((self.batch_size, mat.shape[-2], mat.shape[-1]), dtype=mat.dtype);
+            out = np.zeros(mat.shape, dtype=mat.dtype);
             for batch_id in range(self.batch_size):
                 if step.ndim == 0:
                     out[batch_id, ...] = np.roll(mat[batch_id, ...], step, axis=0);
