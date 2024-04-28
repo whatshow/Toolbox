@@ -1,7 +1,11 @@
 import numpy as np
 class MatlabFuncHelper(object):
+    # configurations
     BATCH_SIZE_NO = None;
-    
+    nan = np.nan;
+    NaN = np.nan;
+    NAN = np.nan;
+    # settings
     batch_size = BATCH_SIZE_NO;
     
     ###########################################################################
@@ -38,8 +42,30 @@ class MatlabFuncHelper(object):
             else:
                 return mat.ndim >= 3 and mat.shape[-2] > 1 and mat.shape[-1] > 1;
     
+    '''
+    is NaN
+    '''
+    def isnan(self, mat):
+        return np.isnan(mat);
+    
     ###########################################################################
     # generators
+    '''
+    generate NaN
+    '''
+    def nan(self, *args):
+        if len(args) == 0:
+            if self.batch_size == self.BATCH_SIZE_NO:
+                out = np.nan;
+            else:
+                out = np.tile(np.nan, (self.batch_size));
+        else:
+            shape = list(args);
+            if self.batch_size != self.BATCH_SIZE_NO:
+                shape.insert(0, self.batch_size);
+            out = np.tile(np.nan, shape);
+        return out;
+    
     '''
     generate a matrix of all zeros
     @in1:   1st dimension
@@ -263,6 +289,12 @@ class MatlabFuncHelper(object):
 
     ###########################################################################
     # Maths
+    '''
+    sum
+    '''
+    def sum(self, mat, *, axis=-1):
+        return np.sum(mat, axis=-1);
+    
     '''
     return the maximum of a matrix or the maximum of two matrices (for complex value, we compare the magnitude)
     @in1:   the matrix to find the maximal value

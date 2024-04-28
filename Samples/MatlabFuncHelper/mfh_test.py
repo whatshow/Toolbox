@@ -3,6 +3,18 @@ from MatlabFuncHelper import MatlabFuncHelper
 
 mfh = MatlabFuncHelper();
 
+# nan
+mfh.batch_size = None;
+rtn_nan = mfh.nan();
+assert(mfh.isnan(rtn_nan) == True);
+rtn_nan = mfh.nan(3,2);
+assert(np.sum(mfh.isnan(rtn_nan)) == 6);
+mfh.batch_size = 18;
+rtn_nan = mfh.nan();
+assert(sum(mfh.isnan(rtn_nan)) == 18);
+rtn_nan = mfh.nan(3,2);
+assert(np.sum(mfh.isnan(rtn_nan)) == 18*6);
+
 # seq
 rtn_seq = mfh.seq(3,4);
 assert(rtn_seq.shape[-1] == 1);

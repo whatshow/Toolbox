@@ -1,5 +1,5 @@
 # Toolbox
-[![PyPi](https://img.shields.io/badge/PyPi-1.0.5-blue)](https://pypi.org/project/whatshow-toolbox/)
+[![PyPi](https://img.shields.io/badge/PyPi-1.0.7-blue)](https://pypi.org/project/whatshow-toolbox/)
 
 
 This repositories offers a toolbox across platforms.
@@ -40,6 +40,7 @@ This repositories offers a toolbox across platforms.
             `@mat`: a vector as [(batch_size), n, 1] or [(batch_size), 1, n]; if n == 1, it will be taken as [(batch_size), n, 1]. Or a square matrix [(batch_size), n, n]
         * circshift(mat, step): circular shift (1st index except for the batch size)
     * Maths
+        * sum(): sum along the last axis
         * max(): return the maximum of a matrix or the maximum of two matrices (for complex value, we compare the magnitude)
             ```c, matlab, python
             self.max(mat1, axis=-1);    // return the maximum of a matrix, axis tells which axis to look at
