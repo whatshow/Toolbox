@@ -97,6 +97,9 @@ rtn_repmat = mfh.repmatN([[1, 2]], 2, 3, 4, order="C");
 assert(np.sum(rtn_repmat - np.tile([1, 2], (2,3,4)), axis=None) == 0);
 assert(rtn_repmat.ndim == 3);
 
+# sum
+rtn_sum = mfh.sum([[1,2], [3,4]]);
+
 # kron
 mfh.batch_size = 2;
 rtn_kron = mfh.kron([[1, 2], [1, 3]], [[[2],[3]], [[2],[3]]]);
