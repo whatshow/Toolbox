@@ -112,6 +112,13 @@ assert(rtn_repmat.ndim == 3);
 # sum
 rtn_sum = mfh.sum([[1,2], [3,4]]);
 
+# max
+rtn_max = mfh.max([[1+1j,2-2j], [3+3j,4-4j]]);
+assert(rtn_max[0]==2-2j);
+assert(rtn_max[1]==4-4j);
+rtn_max = mfh.max1([[1+1j,2-2j], [3+3j,4-4j]]);
+assert(rtn_max)
+
 # kron
 mfh.batch_size = 2;
 rtn_kron = mfh.kron([[1, 2], [1, 3]], [[[2],[3]], [[2],[3]]]);

@@ -293,7 +293,12 @@ class MatlabFuncHelper(object):
     sum
     '''
     def sum(self, mat, *, axis=-1):
-        return np.sum(mat, axis=-1);
+        return np.sum(mat, axis=axis);
+    '''
+    sum (the return value has the same dimension number as the given)
+    '''
+    def sum1(self, mat, *, axis=-1):
+        return np.expand_dims(np.sum(mat, axis=axis), axis=axis);
     
     '''
     return the maximum of a matrix or the maximum of two matrices (for complex value, we compare the magnitude)
@@ -326,6 +331,17 @@ class MatlabFuncHelper(object):
                 out = np.where(abs(in1)>abs(in2), in1, in2);
         return out;
     
+    def max1(self, in1, *args, axis=-1):
+        in1 = np.asarray(in1);
+        if len(args) > 0:
+            return self.max(in1, *args, axis=axis);
+        else:
+            # non-complex value
+            if in1.dtype != np.csingle and in1.dtype != np.complex_:
+                return np.max(in1, axis=axis);
+            else:
+                return np.take_along_axis(in1, np.argmax(abs(in1), axis=axis, keepdims=True), axis);
+    
     '''
     Kronecker product
     @a: a matrix like [(batch_size), ..., i, j]
@@ -348,6 +364,7 @@ class MatlabFuncHelper(object):
             shape[-2] = a.shape[-1]*b.shape[-1];
             out = np.einsum('...ij,...kl->...ikjl', a, b).reshape(shape);
         return out;
+        
 
     ###########################################################################
     # private methods
