@@ -2,7 +2,7 @@ import os
 import shutil
 
 # version control
-version = "1.0.7";
+version = "1.0.8";
 install_requires = ['numpy>=1.23.5'];
 
 # path

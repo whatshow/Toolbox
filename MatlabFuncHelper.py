@@ -169,9 +169,11 @@ class MatlabFuncHelper(object):
     remove redundant dimension except for the batch_size
     '''
     def squeeze(self, mat):
+        mat = np.asarray(mat);
         out = np.squeeze(mat);
         if self.batch_size == 1 and mat.ndim > 0:
-            out = np.expand_dims(out, 0);
+            if mat.shape[0] == self.batch_size:
+                out = np.expand_dims(out, 0);
         return out;
     
     '''
