@@ -1,26 +1,44 @@
 import numpy as np
+import torch
+import tensorflow as tf
 class MatlabFuncHelper(object):
     # configurations
     BATCH_SIZE_NO = None;
-    nan = np.nan;
-    NaN = np.nan;
-    NAN = np.nan;
+    DATA_TYPE_NP = 1;
+    DATA_TYPE_PT = 2;
+    DATA_TYPE_TF = 3;
     # settings
     batch_size = BATCH_SIZE_NO;
+    data_type = None;
+    
+    ###########################################################################
+    # Data type
+    def toNP(self):
+        self.data_type = self.DATA_TYPE_NP;
+    def toPT(self):
+        self.data_type = self.DATA_TYPE_PT;
+    def toTF(self):
+        self.data_type = self.DATA_TYPE_TF;
     
     ###########################################################################
     # Batch
+    def setBS(self, batch_size):
+        self.batch_size = batch_size;
     def setBatchSize(self, batch_size):
         self.batch_size = batch_size;
+    def getBS(self):
+        return self.batch_size;
     def getBatchSize(self):
         return self.batch_size;
     
-    ###########################################################################   
+    ###########################################################################
+    # checkers (adapt for the input type)
     '''
     check input is a vector like [(batch_size), n],  [(batch_size), ..., n, 1] or [(batch_size), ..., 1, n] 
     '''
     def isvector(self, mat):
-        mat = np.asarray(mat);
+        if not isinstance(mat, torch.Tensor) and not isinstance(mat, np.ndarray):
+            mat = np.asarray(mat);
         if self.batch_size == self.BATCH_SIZE_NO:
             return mat.ndim == 1 or mat.ndim >= 2 and (mat.shape[-2] == 1 or mat.shape[-1] == 1);
         else:
@@ -33,7 +51,8 @@ class MatlabFuncHelper(object):
     check input is a matrix like [(batch_size), ..., n, m]
     '''
     def ismatrix(self, mat):
-        mat = np.asarray(mat);
+        if not isinstance(mat, torch.Tensor) and not isinstance(mat, np.ndarray):
+            mat = np.asarray(mat);
         if self.batch_size == self.BATCH_SIZE_NO:
             return mat.ndim == 2 and mat.shape[-2] > 1 and mat.shape[-1] > 1;
         else:
@@ -46,14 +65,18 @@ class MatlabFuncHelper(object):
     is NaN
     '''
     def isnan(self, mat):
-        return np.isnan(mat);
+        if isinstance(mat, torch.Tensor):
+            return torch.isnan(mat);
+        else:
+            return np.isnan(mat);
     
     ###########################################################################
     # generators
     '''
     generate NaN
+    
     '''
-    def nan(self, *args):
+    def nan(self, *args, tensor=False):
         if len(args) == 0:
             if self.batch_size == self.BATCH_SIZE_NO:
                 out = np.nan;
@@ -294,13 +317,11 @@ class MatlabFuncHelper(object):
     '''
     sum
     '''
-    def sum(self, mat, *, axis=-1):
-        return np.sum(mat, axis=axis);
-    '''
-    sum (the return value has the same dimension number as the given)
-    '''
-    def sum1(self, mat, *, axis=-1):
-        return np.expand_dims(np.sum(mat, axis=axis), axis=axis);
+    def sum(self, mat, *, axis=-1, keepdims=False):
+        out = np.sum(mat, axis=axis);
+        if keepdims:
+            out = np.expand_dims(out, axis=axis)
+        return out;
     
     '''
     return the maximum of a matrix or the maximum of two matrices (for complex value, we compare the magnitude)
@@ -308,7 +329,7 @@ class MatlabFuncHelper(object):
     @in2:   a scalar or a matrix to be compared with in1. If not given, it means return the maximal value of in1
     @axis:  the axis to compare or find the maximal value
     '''
-    def max(self, in1, *args, axis=-1):
+    def max(self, in1, *args, axis=-1, keepdims=False):
         out = None;
         in1 = np.asarray(in1);
         in2 = None;

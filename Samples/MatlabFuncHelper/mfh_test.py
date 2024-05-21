@@ -1,7 +1,17 @@
 import numpy as np
+import torch as pt
+import tensorflow as tf
 from MatlabFuncHelper import MatlabFuncHelper
 
 mfh = MatlabFuncHelper();
+'''
+checkers
+'''
+# isvector
+vec_py = [1];
+vec_np = np.array([1]);
+vec_pt = pt.tensor([1]);
+vec_tf = tf.Tensor([1]);
 
 # nan
 mfh.batch_size = None;

@@ -18,8 +18,12 @@ This repositories offers a toolbox across platforms.
 ## How to use
 * MatlabFuncHelper: this class simulate all Matlab functions in python (batch is supported).
     * batch
-        * setBatchSize(batch_size)
-        * getBatchSize()
+        * `setBatchSize(batch_size)` or `setBS(batch_size)`
+        * `getBatchSize()` or `getBS()`
+    * data type selectors
+        * toNP(): to numpy
+        * toPT(): to pytorch
+        * toTF(): to tensorflow
     * checkers
         * isvector(mat)
         * ismatrix(mat)
