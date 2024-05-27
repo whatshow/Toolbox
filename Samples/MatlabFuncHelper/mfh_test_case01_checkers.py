@@ -6,6 +6,10 @@ from MatlabFuncHelper import MatlabFuncHelper
 
 bs = 5;
 
+tf_type_1 = tf.constant([1, 2]);
+tf_type_2 = tf.Variable([1, 2]);
+tf_type_3 = tf.keras.Input(name="in1", shape=(2), dtype=tf.dtypes.float32);
+
 # test no batch data, 1 batch, n batch
 mfh = MatlabFuncHelper();
 mfh_b1 = MatlabFuncHelper();
@@ -55,10 +59,37 @@ for i in range(len(vec_py)):
     vec_np_b1.append(np.tile(vec_np[i], tmp_vec_sh_b1));
     vec_np_bn.append(np.tile(vec_np[i], tmp_vec_sh_bn));
     vec_pt_b1.append(pt.tile(vec_pt[i], tmp_vec_sh_b1));
-    vec_pt_bn.append(pt.tile(vec_pt[i], tmp_vec_sh_bn));
-    
+    vec_pt_bn.append(pt.tile(vec_pt[i], tmp_vec_sh_bn)); 
     vec_tf_b1.append(tf.tile(tf.expand_dims(vec_tf[i], 0), tmp_vec_sh_b1));
     vec_tf_bn.append(tf.tile(tf.expand_dims(vec_tf[i], 0), tmp_vec_sh_bn));
+# build data - matrix
+mat_py = [ [[1]], [[1,2,3]], [[1,2],[3,4]]];
+mat_np = [ np.array([[1]]), np.array([[1,2,3]]), np.array([[1,2],[3,4]])];
+mat_pt = [ pt.tensor([[1]]), pt.tensor([[1,2,3]]), pt.tensor([[1,2],[3,4]])];
+mat_tf = [ tf.Variable([[1]]), tf.Variable([[1,2,3]]), tf.Variable([[1,2],[3,4]])];
+mat_py_b1 = [];
+mat_np_b1 = [];
+mat_pt_b1 = [];
+mat_tf_b1 = [];
+mat_py_bn = [];
+mat_np_bn = [];
+mat_pt_bn = [];
+mat_tf_bn = [];
+for i in range(len(mat_py)):
+    tmp_mat_ndim = np.asarray(mat_py[i]).ndim;
+    tmp_mat_sh_b1 = [1]*tmp_mat_ndim;
+    tmp_mat_sh_bn = [1]*tmp_mat_ndim;
+    tmp_mat_sh_b1.insert(0, 1);
+    tmp_mat_sh_bn.insert(0, bs);
+    mat_py_b1.append(np.tile(mat_py[i], tmp_mat_sh_b1).tolist());
+    mat_py_bn.append(np.tile(mat_py[i], tmp_mat_sh_bn).tolist());
+    mat_np_b1.append(np.tile(mat_np[i], tmp_mat_sh_b1));
+    mat_np_bn.append(np.tile(mat_np[i], tmp_mat_sh_bn));
+    mat_pt_b1.append(pt.tile(mat_pt[i], tmp_mat_sh_b1));
+    mat_pt_bn.append(pt.tile(mat_pt[i], tmp_mat_sh_bn)); 
+    mat_tf_b1.append(tf.tile(tf.expand_dims(mat_tf[i], 0), tmp_mat_sh_b1));
+    mat_tf_bn.append(tf.tile(tf.expand_dims(mat_tf[i], 0), tmp_mat_sh_bn));
+
 
 # check
 # check - scalars
@@ -117,9 +148,66 @@ for i in range(len(vec_py)):
     assert(not mfh_bn.ismatrix(vec_pt_bn[i]));
     assert(not mfh_bn.ismatrix(vec_tf_bn[i]));
 # check - matrix
+for i in range(len(mat_py)):
+    # isvector
+    if i < 2:
+        assert(mfh.isvector(mat_py[i]));
+        assert(mfh.isvector(mat_np[i]));
+        assert(mfh.isvector(mat_pt[i]));
+        assert(mfh.isvector(mat_tf[i]));
+        assert(mfh_b1.isvector(mat_py_b1[i]));
+        assert(mfh_b1.isvector(mat_np_b1[i]));
+        assert(mfh_b1.isvector(mat_pt_b1[i]));
+        assert(mfh_b1.isvector(mat_tf_b1[i]));
+        assert(mfh_bn.isvector(mat_py_bn[i]));
+        assert(mfh_bn.isvector(mat_np_bn[i]));
+        assert(mfh_bn.isvector(mat_pt_bn[i]));
+        assert(mfh_bn.isvector(mat_tf_bn[i]));
+    else:
+        assert(not mfh.isvector(mat_py[i]));
+        assert(not mfh.isvector(mat_np[i]));
+        assert(not mfh.isvector(mat_pt[i]));
+        assert(not mfh.isvector(mat_tf[i]));
+        assert(not mfh_b1.isvector(mat_py_b1[i]));
+        assert(not mfh_b1.isvector(mat_np_b1[i]));
+        assert(not mfh_b1.isvector(mat_pt_b1[i]));
+        assert(not mfh_b1.isvector(mat_tf_b1[i]));
+        assert(not mfh_bn.isvector(mat_py_bn[i]));
+        assert(not mfh_bn.isvector(mat_np_bn[i]));
+        assert(not mfh_bn.isvector(mat_pt_bn[i]));
+        assert(not mfh_bn.isvector(mat_tf_bn[i]));
+    # ismatrix
+    if i < 2:
+        assert(not mfh.ismatrix(mat_py[i]));
+        assert(not mfh.ismatrix(mat_np[i]));
+        assert(not mfh.ismatrix(mat_pt[i]));
+        assert(not mfh.ismatrix(mat_tf[i]));
+        assert(not mfh_b1.ismatrix(mat_py_b1[i]));
+        assert(not mfh_b1.ismatrix(mat_np_b1[i]));
+        assert(not mfh_b1.ismatrix(mat_pt_b1[i]));
+        assert(not mfh_b1.ismatrix(mat_tf_b1[i]));
+        assert(not mfh_bn.ismatrix(mat_py_bn[i]));
+        assert(not mfh_bn.ismatrix(mat_np_bn[i]));
+        assert(not mfh_bn.ismatrix(mat_pt_bn[i]));
+        assert(not mfh_bn.ismatrix(mat_tf_bn[i]));
+    else:
+        assert(mfh.ismatrix(mat_py[i]));
+        assert(mfh.ismatrix(mat_np[i]));
+        assert(mfh.ismatrix(mat_pt[i]));
+        assert(mfh.ismatrix(mat_tf[i]));
+        assert(mfh_b1.ismatrix(mat_py_b1[i]));
+        assert(mfh_b1.ismatrix(mat_np_b1[i]));
+        assert(mfh_b1.ismatrix(mat_pt_b1[i]));
+        assert(mfh_b1.ismatrix(mat_tf_b1[i]));
+        assert(mfh_bn.ismatrix(mat_py_bn[i]));
+        assert(mfh_bn.ismatrix(mat_np_bn[i]));
+        assert(mfh_bn.ismatrix(mat_pt_bn[i]));
+        assert(mfh_bn.ismatrix(mat_tf_bn[i]));
 
 
 '''
 isnan
 '''
-    
+nans = [float('nan'), np.nan, pt.tensor(float('nan')), tf.Variable(float('nan'))];
+for i in range(len(nans)):
+    assert(mfh.isnan(nans[i]))
