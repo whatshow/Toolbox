@@ -1,5 +1,5 @@
 # Toolbox
-[![PyPi](https://img.shields.io/badge/PyPi-1.0.9-blue)](https://pypi.org/project/whatshow-toolbox/)
+[![PyPi](https://img.shields.io/badge/PyPi-1.0.10-blue)](https://pypi.org/project/whatshow-toolbox/)
 
 
 This repositories offers a toolbox across platforms.
@@ -27,6 +27,7 @@ This repositories offers a toolbox across platforms.
     * checkers
         * isvector(mat)
         * ismatrix(mat)
+        * isnan(mat)
     * generators
         * zeros(d1, d2, ...)
         * ones(d1, d2, ...)

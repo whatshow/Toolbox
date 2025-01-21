@@ -1,5 +1,5 @@
 import numpy as np
-import torch
+import torch as pt
 import tensorflow as tf
 class MatlabFuncHelper(object):
     # configurations
@@ -9,7 +9,7 @@ class MatlabFuncHelper(object):
     DATA_TYPE_TF = 3;
     # settings
     batch_size = BATCH_SIZE_NO;
-    data_type = None;
+    data_type = DATA_TYPE_NP;
     
     ###########################################################################
     # Data type
@@ -37,58 +37,59 @@ class MatlabFuncHelper(object):
     check input is a vector like [(batch_size), n],  [(batch_size), ..., n, 1] or [(batch_size), ..., 1, n] 
     '''
     def isvector(self, mat):
-        if not isinstance(mat, torch.Tensor) and not isinstance(mat, np.ndarray):
+        is_vector = False;
+        if not isinstance(mat, np.ndarray) and not isinstance(mat, pt.Tensor) and not tf.is_tensor(mat):
             mat = np.asarray(mat);
         if self.batch_size == self.BATCH_SIZE_NO:
-            return mat.ndim == 1 or mat.ndim >= 2 and (mat.shape[-2] == 1 or mat.shape[-1] == 1);
+            if tf.is_tensor(mat):
+                is_vector = mat.shape.ndims == 1 or mat.shape.ndims >= 2 and (mat.shape[-2] == 1 or mat.shape[-1] == 1);
+            else:
+                is_vector = mat.ndim == 1 or mat.ndim >= 2 and (mat.shape[-2] == 1 or mat.shape[-1] == 1);
         else:
             if mat.shape[0] != self.batch_size:
                 raise Exception("The input does not has the required batch size.");
             else:
-                return mat.ndim == 2 or mat.ndim >= 3 and (mat.shape[-2] == 1 or mat.shape[-1] == 1);
+                if tf.is_tensor(mat):
+                    is_vector = mat.shape.ndims == 2 or mat.shape.ndims >= 3 and (mat.shape[-2] == 1 or mat.shape[-1] == 1);
+                else:
+                    is_vector =  mat.ndim == 2 or mat.ndim >= 3 and (mat.shape[-2] == 1 or mat.shape[-1] == 1);
+        return is_vector;
             
     '''
     check input is a matrix like [(batch_size), ..., n, m]
     '''
     def ismatrix(self, mat):
-        if not isinstance(mat, torch.Tensor) and not isinstance(mat, np.ndarray):
+        is_matrix = False;
+        if not isinstance(mat, np.ndarray) and not isinstance(mat, pt.Tensor) and not tf.is_tensor(mat):
             mat = np.asarray(mat);
         if self.batch_size == self.BATCH_SIZE_NO:
-            return mat.ndim == 2 and mat.shape[-2] > 1 and mat.shape[-1] > 1;
+            if tf.is_tensor(mat):
+                is_matrix =  mat.shape.ndims == 2 and mat.shape[-2] > 1 and mat.shape[-1] > 1;
+            else:
+                is_matrix = mat.ndim == 2 and mat.shape[-2] > 1 and mat.shape[-1] > 1;
         else:
             if mat.shape[0] != self.batch_size:
                 raise Exception("The input does not has the required batch size.");
             else:
-                return mat.ndim >= 3 and mat.shape[-2] > 1 and mat.shape[-1] > 1;
+                if tf.is_tensor(mat):
+                    is_matrix = mat.shape.ndims >= 3 and mat.shape[-2] > 1 and mat.shape[-1] > 1;
+                else:    
+                    is_matrix = mat.ndim >= 3 and mat.shape[-2] > 1 and mat.shape[-1] > 1;
+        return is_matrix;
     
     '''
     is NaN
     '''
     def isnan(self, mat):
-        if isinstance(mat, torch.Tensor):
-            return torch.isnan(mat);
+        if isinstance(mat, pt.Tensor):
+            return pt.isnan(mat);
+        elif tf.is_tensor(mat):
+            return tf.math.is_nan(mat);
         else:
             return np.isnan(mat);
     
     ###########################################################################
     # generators
-    '''
-    generate NaN
-    
-    '''
-    def nan(self, *args, tensor=False):
-        if len(args) == 0:
-            if self.batch_size == self.BATCH_SIZE_NO:
-                out = np.nan;
-            else:
-                out = np.tile(np.nan, (self.batch_size));
-        else:
-            shape = list(args);
-            if self.batch_size != self.BATCH_SIZE_NO:
-                shape.insert(0, self.batch_size);
-            out = np.tile(np.nan, shape);
-        return out;
-    
     '''
     generate a matrix of all zeros
     @in1:   1st dimension
@@ -99,7 +100,13 @@ class MatlabFuncHelper(object):
         shape = self._shape_calc_(in1, *args, order=order);
         if self.batch_size != self.BATCH_SIZE_NO:
             shape.insert(0, self.batch_size);
-        return np.zeros(shape);    
+        # return
+        if self.data_type == self.DATA_TYPE_PT:
+            return pt.zeros(shape);
+        elif self.data_type == self.DATA_TYPE_TF:
+            return tf.zeros(shape);
+        else:
+            return np.zeros(shape);    
     
     '''
     generate a matrix full of ones
@@ -111,7 +118,13 @@ class MatlabFuncHelper(object):
         shape = self._shape_calc_(in1, *args, order=order);
         if self.batch_size != self.BATCH_SIZE_NO:
             shape.insert(0, self.batch_size);
-        return np.ones(shape);
+        # return
+        if self.data_type == self.DATA_TYPE_PT:
+            return pt.ones(shape);
+        elif self.data_type == self.DATA_TYPE_TF:
+            return tf.ones(shape);
+        else:
+            return np.ones(shape);    
     
     '''
     return an identity matrix
@@ -223,12 +236,6 @@ class MatlabFuncHelper(object):
         mat = np.asarray(mat);
         mat_dims = mat.ndim;
         shape_ori_len, shape = self.rempat_build_shape(mat_dims, in1, *args, order=order);
-        # batch size
-        if self.batch_size != self.BATCH_SIZE_NO:
-            # the given shape has a smaller dimension than that figure of the given matrix
-            # the (batch_size) is ignored 
-            if shape_ori_len <= mat_dims:    
-                shape.insert(0, 1);
         return np.tile(mat, shape);
     # repeat the matrix in the given dimension (the batch dim is repeated as batch_size)
     def repmatN(self, mat, in1, *args, order='C'):
@@ -240,7 +247,7 @@ class MatlabFuncHelper(object):
             # the given shape has a smaller dimension than that figure of the given matrix
             # the (batch_size) is ignored 
             if shape_ori_len <= mat_dims:    
-                shape.insert(0, self.batch_size);
+                shape[0] = self.batch_size;
         return np.tile(mat, shape);
     # calculate [shape_len, shape] for repmat before batch_size
     def rempat_build_shape(self, mat_dims, in1, *args, order='C'):

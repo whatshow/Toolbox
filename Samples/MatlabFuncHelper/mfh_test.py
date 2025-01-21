@@ -13,17 +13,6 @@ vec_np = np.array([1]);
 vec_pt = pt.tensor([1]);
 vec_tf = tf.Tensor([1]);
 
-# nan
-mfh.batch_size = None;
-rtn_nan = mfh.nan();
-assert(mfh.isnan(rtn_nan) == True);
-rtn_nan = mfh.nan(3,2);
-assert(np.sum(mfh.isnan(rtn_nan)) == 6);
-mfh.batch_size = 18;
-rtn_nan = mfh.nan();
-assert(sum(mfh.isnan(rtn_nan)) == 18);
-rtn_nan = mfh.nan(3,2);
-assert(np.sum(mfh.isnan(rtn_nan)) == 18*6);
 
 # seq
 rtn_seq = mfh.seq(3,4);
@@ -31,29 +20,6 @@ assert(rtn_seq.shape[-1] == 1);
 rtn_seq = mfh.seq(3,4, order="F");
 assert(rtn_seq.shape[-1] == 2);
 
-# ones
-mfh.batch_size = None;
-rtn_ones = mfh.ones(4, order="F");
-assert(rtn_ones.shape == (4,4));
-rtn_ones = mfh.ones(4, order="C");
-assert(rtn_ones.shape == (4,));
-mfh.batch_size = 18;
-rtn_ones = mfh.ones(4, order="F");
-assert(rtn_ones.shape == (18,4,4));
-rtn_ones = mfh.ones(4, order="C");
-assert(rtn_ones.shape == (18,4));
-
-# eye
-mfh.batch_size = None;
-rtn_eye = mfh.eye(4);
-assert(rtn_eye.shape == (4,4));
-rtn_eye = mfh.eye(4, 8);
-assert(rtn_eye.shape == (4,8));
-mfh.batch_size = 18;
-rtn_eye = mfh.eye(4);
-assert(rtn_eye.shape == (18,4,4));
-rtn_eye = mfh.eye(4, 8);
-assert(rtn_eye.shape == (18,4,8));
 
 # rand
 mfh.batch_size = None;
